@@ -1,0 +1,16 @@
+name: project2-FYS-STK4155
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>3.6
+  - notebook>5.2
+  - matplotlib
+  - numpy
+  - scikit-learn
+  - jupyter_nbextensions_configurator
+  - gdal
+  - jupyter_contrib_nbextensions
+  - markdown
+  - pandas
+  - tensorflow
