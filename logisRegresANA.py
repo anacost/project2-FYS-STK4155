@@ -162,9 +162,9 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
 def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
         #print('type(minibatch)', type(minibatch), minibatch.shape)
         print('mini_batch ', minibatch)
-        nmb = (minibatch).shape[0]
-        listw = sizes[:-1]
+        nmb = (minibatch).shape[0]   
         listb = sizes[1:]
+        listw = sizes[:-1]
         #initialise updates with zero arrays
         nabla_b = numpy.dot(0.0 , (biases))   #numpy.array([[0] for _ in listb])
         nabla_w = numpy.dot(0.0, (weights)) #numpy.array([[0 for _ in listw] for _ in listb])
@@ -208,10 +208,10 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     nabla_b_backprop = numpy.dot(0., biases)     #numpy.array([[0] for _ in listb])
     nabla_w_backprop = numpy.dot(0., weights)
     #Feed-forward (get predictions)
-    activation = numpy.array(x)           #numpy.array([[xi] for xi in x])
+    activation = numpy.array(x)           #first activation is input vector x
     activations = [numpy.array(list(x))]
     print('activations: ',  activations)
-    zs = []
+    zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
     for f, b in enumerate(biases):
@@ -225,7 +225,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         print('b :', b)
         print('z = w_a + b : ', z)
         zs.append(z)
-        activation = sigmoid(z)
+        activation = sigmoid(z)    #activation function
         activations.extend([activation])
         
     print('ACTIVATIONS : ', activations[0])
