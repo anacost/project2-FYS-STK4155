@@ -143,14 +143,14 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
        biases, weights, verbose, validation_x, validation_y):
     #every epoch
     training_data =np.concatenate((X_train,np.array([Y_train]).T),axis=1) # zip(X_train,Y_train)
-    for j in range(epochs):
+    for j,_ in enumerate(epochs):
         np.random.shuffle(training_data) #stochastic mini_batch (shuffle data)
         
         #Partition set into mini_batches
         mini_batches =  numpy.split(training_data, math.ceil(Y_train.shape[0]/mini_batch_size))#
                 
         #feed-forward (and back) all mini_batches
-        for k, minib in enumerate(mini_batches):
+        for _, minib in enumerate(mini_batches):
             biases, weights = update_mini_batch(minib, lr, C, sizes, num_layers,biases,weights)
             
         if(verbose):
@@ -181,8 +181,7 @@ def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
           
             x = minib[:-1]    
             y = minib[-1]    
-            print('x ', x)
-            print('y ', y)
+            
             #backpropagation for each observation in mini_batch
             delta_nabla_b, delta_nabla_w = backprop(x, y, C,sizes,num_layers,biases,weights)
             #print(delta_nabla_b.shape, 'delta_nabla_b ', delta_nabla_b)
