@@ -254,7 +254,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print('sp ', sp)
             print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
             print('delta ', delta)
-            delta = np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)  #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
+            delta =sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
             print('delta in loop k', delta)
             nabla_b_backprop[-1 - k] = delta
             testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
