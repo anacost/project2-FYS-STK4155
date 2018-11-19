@@ -1,9 +1,9 @@
 import math
-import numeric
+#import numeric
 import random
-import autograd.numpy as np
-from autograd import grad
-import numpy
+#import autograd.numpy as np
+#from autograd import grad
+import numpy as np
 import pandas
 def sigmoid(inX):
     #return 0.5*(np.tanh(x) + 1)
@@ -108,9 +108,9 @@ def steepest_descent_auto(X_train, Y_train, alpha =0.001):
     
 ################################
 def logistic_reg(X_train, y, epochs, lr):   #ruim...
-    xb = numpy.c_[numpy.ones((X_train.shape[0],1)),X_train]
+    xb = np.c_[numpy.ones((X_train.shape[0],1)),X_train]
     #beta_hat =  np.linalg.inv(xb.T @ xb) @ xb.T @ y
-    weights = numpy.ones(xb.shape[1]) #number of columns of xb
+    weights = np.ones(xb.shape[1]) #number of columns of xb
     for j in range(1,epochs):
         residual = sigmoid(xb @ weights) - y
         delta = (xb.T @ residual )* (1/xb.shape[0])
@@ -143,11 +143,11 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
        biases, weights, verbose, validation_x, validation_y):
     #every epoch
     training_data =np.concatenate((X_train,np.array([Y_train]).T),axis=1) # zip(X_train,Y_train)
-    for j,_ in enumerate(epochs):
+    for j in range(epochs):
         np.random.shuffle(training_data) #stochastic mini_batch (shuffle data)
         
         #Partition set into mini_batches
-        mini_batches =  numpy.split(training_data, math.ceil(Y_train.shape[0]/mini_batch_size))#
+        mini_batches =  np.split(training_data, math.ceil(Y_train.shape[0]/mini_batch_size))#
                 
         #feed-forward (and back) all mini_batches
         for _, minib in enumerate(mini_batches):
@@ -166,8 +166,8 @@ def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
         listb = sizes[1:]
         listw = sizes[:-1]
         #initialise updates with zero arrays
-        nabla_b = numpy.dot(0.0 , (biases))   #numpy.array([[0] for _ in listb])
-        nabla_w = numpy.dot(0.0, (weights)) #numpy.array([[0 for _ in listw] for _ in listb])
+        nabla_b = np.dot(0.0 , (biases))   #numpy.array([[0] for _ in listb])
+        nabla_w = np.dot(0.0, (weights)) #numpy.array([[0 for _ in listw] for _ in listb])
         #print('weights ', weights)
         print('nabla_w from weights -shape ', nabla_w.shape)
         print('nabla_b from weights -shape ', nabla_b.shape)
@@ -205,22 +205,22 @@ def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
 def backprop(x, y, C, sizes, num_layers, biases, weights):
     listw = sizes[:-1]
     listb = sizes[1:]
-    nabla_b_backprop = numpy.dot(0., biases)     #numpy.array([[0] for _ in listb])
-    nabla_w_backprop = numpy.dot(0., weights)
+    nabla_b_backprop = np.dot(0., biases)     #numpy.array([[0] for _ in listb])
+    nabla_w_backprop = np.dot(0., weights)
     #Feed-forward (get predictions)
-    activation = numpy.array(x)           #first activation is input vector x
-    activations = [numpy.array(list(x))]
+    activation = np.array(x)           #first activation is input vector x
+    activations = [np.array(list(x))]
     print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
     for f, b in enumerate(biases):
-        w = numpy.array(weights[f])
+        w = np.array(weights[f])
         print('f', f, 'w in loop', w)
         print('activation : ', activation)
-        w_a = numpy.dot(w , activation)
+        w_a = np.dot(w , activation)
         print('w_a =  numpy.dot(w , activation): ', w_a )
-        b_broadcast = numpy.array(b)   #??
+        b_broadcast = np.array(b)   #??
         z = w_a + b
         print('b :', b)
         print('z = w_a + b : ', z)
@@ -238,9 +238,9 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)
     print('DELTA : ', delta)   
     nabla_b_backprop[-1] = delta
-    print('in backprop: numpy.array(activations[-2]).T ', numpy.array(activations[-2]).T )
+    print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).T )
     if len(delta.shape)== 1: delta = delta[0]
-    nabla_w_backprop[-1] = numpy.multiply(numpy.array(activations[-2]),delta)#numpy.dot(delta , numpy.array(activations[-2]).T) #transpose
+    nabla_w_backprop[-1] = np.multiply(np.array(activations[-2]),delta)#numpy.dot(delta , numpy.array(activations[-2]).T) #transpose
     print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
     print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
     
@@ -252,20 +252,20 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-1-(k)])
             print('sp ', sp)
-            print('numpy.array(weights[-1- (k-1)]).T ', numpy.array(weights[-1- (k-1)]).T)
+            print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
             print('delta ', delta)
-            delta = numpy.multiply(numpy.dot(numpy.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)  #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
+            delta = np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)  #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
             print('delta in loop k', delta)
             nabla_b_backprop[-1 - k] = delta
-            testyy = numpy.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
+            testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
             print('testyy', testyy)
-            nabla_w_backprop[-1 -(k)] = numpy.multiply(testyy, delta) #numpy.multiply(delta , testyy)
+            nabla_w_backprop[-1 -(k)] = np.multiply(testyy, delta) #numpy.multiply(delta , testyy)
             
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
     for f, b in enumerate(biases):
         #w_a = numpy.dot(weights[f], a )
-        a = sigmoid(numpy.dot(weights[f], a) + b)
+        a = sigmoid(np.dot(weights[f], a) + b)
     return a
 def get_predictions(test_Y, biases, weights):
     feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
