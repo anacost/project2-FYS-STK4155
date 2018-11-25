@@ -4,6 +4,7 @@ import random
 #import autograd.numpy as np
 #from autograd import grad
 import numpy as np
+import numpy.ma as ma   #maskedarrays
 import pandas
 def sigmoid(inX):
     #return 0.5*(np.tanh(x) + 1)
@@ -130,10 +131,20 @@ def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
     #print('listb ', listb)
     #print('listw ', listw)
     #initialises with gaussian distribution for biases and weights
-    biases = np.array([[random.gauss(0,1) for _ in range(b)] for _,b in enumerate(listb)])
-    weights = np.array([[[random.gauss(0,1) for _ in range(w)] for _ in range(b)] for w,b in zip(listw,listb)])
-    biases = np.array(list(map(np.array, biases)))
-    weights = np.array(list(map(np.array, weights)))
+    #biases = np.array([[random.gauss(0,1) for _ in range(b)] for _,b in enumerate(listb)])
+    #weights = np.array([[[random.gauss(0,1) for _ in range(w)] for _ in range(b)] for w,b in zip(listw,listb)])
+    #biases = np.array(list(map(np.array, biases)))
+    #weights = np.array(list(map(np.array, weights)))
+    biases = [np.random.randn(max(listb)) for _ in listb]
+    biases = np.stack(biases, axis=0)
+    biases = ma.array(biases, mask=[[0]*listbi+[1]*(max(listb)-listbi) for listbi in listb])
+    weights = [np.random.randn(max(listw),max(listb)) for _,_ in zip(listw,listb)]
+    weights = np.stack(weights, axis=0)
+    #mask for weights:
+    marraysw = [np.pad(np.zeros((listwi,listbi)), ((0, max(listw)-listwi),(0,max(listb)-listbi)), 'constant', constant_values=1) for listwi,listbi in zip(listw,listb)]
+
+    marraysw = np.stack(marraysw, axis=0)
+    weights = ma.array(weights, mask=marraysw)
     #print('biases initial ', biases)
     #print('initial weights ', weights)
     biases, weights = SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers, 
