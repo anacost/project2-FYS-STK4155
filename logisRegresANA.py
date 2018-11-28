@@ -225,14 +225,9 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
-    for f, b in enumerate(biases):
-        w = np.array(weights[f])
-        print('f', f, 'w in loop', w)
-        print('activation : ', activation)
-        w_a = np.dot(w , activation)
-        print('w_a =  numpy.dot(w , activation): ', w_a )
-        b_broadcast = np.array(b)   #??
-        z = w_a + b
+    for b, w in zip(biases,weights):
+       
+        z = np.dot(w , activation) + b
         print('b :', b)
         print('z = w_a + b : ', z)
         zs.append(z)
