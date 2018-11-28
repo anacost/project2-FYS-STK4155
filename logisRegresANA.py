@@ -221,7 +221,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('shape of weights ', weights.shape)
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
-        z = np.dot(w , activation) + b
+        z = np.dot(w.T , activation) + b
         #print('b :', b)
         #print('z = w_a + b : ', z)
         zs.append(z)
@@ -253,7 +253,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             #print('sp ', sp)
             #print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
             #print('delta ', delta)
-            delta = np.dot(weights[-k+1],transpose(), delta) * sp
+            delta = np.dot(weights[-k+1].transpose(), delta) * sp
             #sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
             #print('delta in loop k', delta)
             nabla_b_backprop[- k] = delta
