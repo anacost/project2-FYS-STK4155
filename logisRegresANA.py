@@ -172,7 +172,7 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
     return biases, weights
 def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
         #print('type(minibatch)', type(minibatch), minibatch.shape)
-        print('mini_batch ', minibatch)
+        #print('mini_batch ', minibatch)
         nmb = (minibatch).shape[0]   
         listb = sizes[1:]
         listw = sizes[:-1]
@@ -180,30 +180,24 @@ def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
         nabla_b = np.dot(0.0 , (biases))   #numpy.array([[0] for _ in listb])
         nabla_w = np.dot(0.0, (weights)) #numpy.array([[0 for _ in listw] for _ in listb])
         #print('weights ', weights)
-        print('nabla_w from weights -shape ', nabla_w.shape)
-        print('nabla_b from weights -shape ', nabla_b.shape)
+        #print('nabla_w from weights -shape ', nabla_w.shape)
+        #print('nabla_b from weights -shape ', nabla_b.shape)
         for i, minib in enumerate(minibatch):
             #print('i: ',i, 'minib ', minib)
-            
             #print('type of minib ', type(minib))
             #print('shape of minib ', minib.shape)
             #print('x = minib[:-1]', minib[:-1])
             #print(' y = minib[-1]',  minib[-1])
-          
             x = minib[:-1]    
             y = minib[-1]    
-            
             #backpropagation for each observation in mini_batch
             delta_nabla_b, delta_nabla_w = backprop(x, y, C,sizes,num_layers,biases,weights)
             #print(delta_nabla_b.shape, 'delta_nabla_b ', delta_nabla_b)
-            print(delta_nabla_w.shape, 'delta_nabla_w ', delta_nabla_w)
-            
-            print('shapes dos2', delta_nabla_w[0].shape, delta_nabla_w[1].shape)
-            
-            print(delta_nabla_b.shape, 'delta_nabla_b ', delta_nabla_b)
-            print('shapes dos2', delta_nabla_b[0].shape, delta_nabla_b[1].shape)
+            #print(delta_nabla_w.shape, 'delta_nabla_w ', delta_nabla_w)
+            #print('shapes dos2', delta_nabla_w[0].shape, delta_nabla_w[1].shape)
+            #print(delta_nabla_b.shape, 'delta_nabla_b ', delta_nabla_b)
+            #print('shapes dos2', delta_nabla_b[0].shape, delta_nabla_b[1].shape)
             #Add on deltas to nabla
-            
             nabla_b = nabla_b + delta_nabla_b
             nabla_w = nabla_w + delta_nabla_w
         #print(type(weights[0]), 'weights[0] shape', weights[0].shape)
@@ -221,57 +215,57 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #Feed-forward (get predictions)
     activation = np.array(x)           #first activation is input vector x
     activations = [np.array(list(x))]
-    print('activations: ',  activations)
+    #print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
     for b, w in zip(biases,weights):
-       
+        print(w.shape, activation.shape, b.shape)
         z = np.dot(w , activation) + b
-        print('b :', b)
-        print('z = w_a + b : ', z)
+        #print('b :', b)
+        #print('z = w_a + b : ', z)
         zs.append(z)
         activation = sigmoid(z)    #activation function
         activations.extend([activation])
         
-    print('ACTIVATIONS : ', activations[0])
-    print( activations[1])
-    print( activations[2])
+    #print('ACTIVATIONS : ', activations[0])
+    #print( activations[1])
+    #print( activations[2])
     #Backwards (update gradients using errors)
     #last layer
-    print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
-    print('zs stored :' , zs)
+    #print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
+    #print('zs stored :' , zs)
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)
-    print('DELTA : ', delta)   
+    #print('DELTA : ', delta)   
     nabla_b_backprop[-1] = delta
-    print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).T )
-    if len(delta.shape)== 1: delta = delta[0]
-    nabla_w_backprop[-1] = np.multiply(np.array(activations[-2]),delta)#numpy.dot(delta , numpy.array(activations[-2]).T) #transpose
-    print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
-    print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
+    #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
+    #if len(delta.shape)== 1: delta = delta[0]
+    nabla_w_backprop[-1] = numpy.dot(delta , numpy.array(activations[-2]).transpose()) #transpose
+    #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
+    #print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
     
-
     #Second to second-to-last-layer
     #if no hidden layer reduces to multinomial logit
     if (num_layers>2):
-        for k in range(1,(num_layers-1)):
+        for k in range(2,(num_layers)):
             print("ENTRA NESTE LOOP, k = ", k)
-            sp = sigmoid_prime(zs[-1-(k)])
-            print('sp ', sp)
-            print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
-            print('delta ', delta)
-            delta =sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
-            print('delta in loop k', delta)
-            nabla_b_backprop[-1 - k] = delta
-            testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
-            print('testyy', testyy)
-            nabla_w_backprop[-1 -(k)] = np.multiply(testyy, delta) #numpy.multiply(delta , testyy)
+            sp = sigmoid_prime(zs[-k])
+            #print('sp ', sp)
+            #print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
+            #print('delta ', delta)
+            delta = np.dot(weights[-k+1],transpose(), delta) * sp
+            #sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
+            #print('delta in loop k', delta)
+            nabla_b_backprop[- k] = delta
+            #testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
+            #print('testyy', testyy)
+            nabla_w_backprop[-(k)] = np.dot(delta, activations[-k-1].transpose())#np.multiply(testyy, delta) #numpy.multiply(delta , testyy)
             
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
-    for f, b in enumerate(biases):
+    for b,w in zip(biases,weights):
         #w_a = numpy.dot(weights[f], a )
-        a = sigmoid(np.dot(weights[f], a) + b)
+        a = sigmoid(np.dot(w, a) + b)
     return a
 def get_predictions(test_Y, biases, weights):
     feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
