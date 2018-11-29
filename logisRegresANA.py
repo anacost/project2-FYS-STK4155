@@ -221,7 +221,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('shape of weights ', weights.shape)
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
-        z = np.dot(w.T , activation) + b
+        z = np.dot(w , activation) + b
         #print('b :', b)
         #print('z = w_a + b : ', z)
         zs.append(z)
