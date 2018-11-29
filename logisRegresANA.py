@@ -138,10 +138,10 @@ def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
     biases = [np.random.randn(max(listb)) for _ in listb]
     biases = np.stack(biases, axis=0)
     biases = ma.array(biases, mask=[[0]*listbi+[1]*(max(listb)-listbi) for listbi in listb])
-    weights = [np.random.randn(max(listw),max(listb)) for _,_ in zip(listw,listb)]
+    weights = [np.random.randn(max(listb),max(listw)) for _,_ in zip(listw,listb)]
     weights = np.stack(weights, axis=0)
     #mask for weights:
-    marraysw = [np.pad(np.zeros((listwi,listbi)), ((0, max(listw)-listwi),(0,max(listb)-listbi)), 'constant', constant_values=1) for listwi,listbi in zip(listw,listb)]
+    marraysw = [np.pad(np.zeros((listbi,listwi)), ((0, max(listb)-listbi),(0,max(listw)-listwi)), 'constant', constant_values=1) for listwi,listbi in zip(listw,listb)]
 
     marraysw = np.stack(marraysw, axis=0)
     weights = ma.array(weights, mask=marraysw)
