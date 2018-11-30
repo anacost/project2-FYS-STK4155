@@ -213,10 +213,13 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     nabla_b_backprop = np.dot(0., biases)     #numpy.array([[0] for _ in listb])
     nabla_w_backprop = np.dot(0., weights)
     #Feed-forward (get predictions)
+    print('x : ', x)
+    print('type(x) ', type(x))
+    print('shape of x : ', x.shape)
     activation = np.array(x)           #first activation is input vector x
     activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])#[np.array(list(x))]
     
-    #print('activations: ',  activations)
+    print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
@@ -242,10 +245,12 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
     print('(1)', activations[1])
     print('(2)', activations[2])
+    
+    print('zs[-1] : ', zs[-1])
     #Backwards (update gradients using errors)
     #last layer
     #print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
-    #print('zs stored :' , zs)
+    print('zs stored :' , zs)
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)
     #print('DELTA : ', delta)   
     nabla_b_backprop[-1] = delta
