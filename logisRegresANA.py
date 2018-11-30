@@ -223,7 +223,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
         print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
-        z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed()
+        z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed() #np.dot(w, activation) +b
         #print('b :', b)
         #print('z = w_a + b : ', z)
         zs.append(z)
@@ -231,9 +231,9 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         activations.extend([activation])
         i = i +1
         
-    #print('ACTIVATIONS : ', activations[0])
-    #print( activations[1])
-    #print( activations[2])
+    print('ACTIVATIONS : (0)', activations[0])
+    print('(1)', activations[1])
+    print('(2)', activations[2])
     #Backwards (update gradients using errors)
     #last layer
     #print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
