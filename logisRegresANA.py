@@ -228,6 +228,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         z = np.dot(w, activation) +b
         #print('b :', b)
         #print('z = w_a + b : ', z)
+        print('z ', z)
+        print('z.shape ', z.shape)
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
