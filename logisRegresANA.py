@@ -220,13 +220,14 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
-    activations[0] = activation
-    i = 1
+    i= 0
+    activations[i][:len(activation)]  = activation
+    
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
         print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
         #z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed() #np.dot(w, activation) +b
-        z = np.dot(w, activation) +b
+        z = np.dot(w, activations[i]) +b
         #print('b :', b)
         #print('z = w_a + b : ', z)
         print('z ', z)
@@ -234,8 +235,9 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
-        activations[i][:len(activation)] = activation
         i = i +1
+        activations[i][:len(activation)] = activation
+        
         
     print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
     print('(1)', activations[1])
