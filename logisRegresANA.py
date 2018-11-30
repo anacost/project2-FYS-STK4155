@@ -215,12 +215,13 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #Feed-forward (get predictions)
     activation = np.array(x)           #first activation is input vector x
     activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])#[np.array(list(x))]
-    #activations[0] = activation
+    
     #print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
     #print('shape of weights ', weights.shape)
-    i = 0
+    activations[0] = activation
+    i = 1
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
         print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
@@ -233,7 +234,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
-        activations[i] = activation
+        activations[i].compressed() = activation
         i = i +1
         
     print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
