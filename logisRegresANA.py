@@ -234,7 +234,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
-        activations[i].compressed() = activation
+        activations[i][:len(activation)] = activation
         i = i +1
         
     print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
