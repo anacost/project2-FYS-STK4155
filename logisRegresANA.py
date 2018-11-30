@@ -243,7 +243,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     nabla_b_backprop[-1] = delta
     #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
     #if len(delta.shape)== 1: delta = delta[0]
-    nabla_w_backprop[-1] = numpy.dot(delta , numpy.array(activations[-2]).transpose()) #transpose
+    nabla_w_backprop[-1] = np.dot(delta , numpy.array(activations[-2]).transpose()) #transpose
     #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
     #print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
     
