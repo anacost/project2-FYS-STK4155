@@ -214,7 +214,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     nabla_w_backprop = np.dot(0., weights)
     #Feed-forward (get predictions)
     activation = np.array(x)           #first activation is input vector x
-    activations = [np.array(list(x))]
+    activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])#[np.array(list(x))]
+    #activations[0] = activation
     #print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
     #print('weights ', weights)
@@ -223,12 +224,14 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     for b, w in zip(biases,weights):
         print(w.shape, activation.shape, b.shape)
         print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
-        z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed() #np.dot(w, activation) +b
+        #z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed() #np.dot(w, activation) +b
+        z = np.dot(w, activation) +b
         #print('b :', b)
         #print('z = w_a + b : ', z)
         zs.append(z)
         activation = sigmoid(z)    #activation function
-        activations.extend([activation])
+        #activations.extend([activation])
+        activations[i] = activation
         i = i +1
         
     print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
