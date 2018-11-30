@@ -231,7 +231,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         activations.extend([activation])
         i = i +1
         
-    print('ACTIVATIONS : (0)', activations[0])
+    print('ACTIVATIONS : (0)',activations[0].shape, activations[0])
     print('(1)', activations[1])
     print('(2)', activations[2])
     #Backwards (update gradients using errors)
