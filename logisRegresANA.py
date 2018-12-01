@@ -258,7 +258,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #if len(delta.shape)== 1: delta = delta[0]
     print(delta, np.array(activations[-2]).transpose())
     print('delta.shape, np.array(activations[-2]).transpose().shape : ', delta.shape, np.array(activations[-2]).transpose().shape)
-    nabla_w_backprop[-1] = np.multiply(delta , np.array(activations[-2]).transpose()) #dot
+    nabla_w_backprop[-1] = np.multiply(delta , activations[-2].transpose()) 
     #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
     #print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
     
@@ -268,16 +268,16 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         for k in range(2,(num_layers)):
             print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-k])
-            #print('sp ', sp)
-            #print('numpy.array(weights[-1- (k-1)]).T ', np.array(weights[-1- (k-1)]).T)
-            #print('delta ', delta)
+            
+            print('weights[-k+1].transpose() ', weights[-k+1].transpose())
+            print('delta ', delta)
+            print('sp ', sp)
             delta = np.dot(weights[-k+1].transpose(), delta) * sp
-            #sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
+   
             print('delta in loop k ',delta.shape, delta)
             print('delta[~delta.mask] ', delta[~delta.mask])
             nabla_b_backprop[- k] = delta[~delta.mask]
-            #testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
-            #print('testyy', testyy)
+           
             nabla_w_backprop[-(k)] = np.multiply(delta, activations[-k-1].transpose())  #[~delta.mask]  #numpy.multiply(delta , testyy)
             
     return nabla_b_backprop, nabla_w_backprop
