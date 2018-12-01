@@ -279,7 +279,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print('delta[~delta.mask] ', delta[~delta.mask])
             nabla_b_backprop[- k] = delta[~delta.mask]
            
-            nabla_w_backprop[-(k)] = np.dot(delta, activations[-k-1])  #[~delta.mask]  #numpy.multiply(delta , testyy)
+            nabla_w_backprop[-(k)] = np.dot(delta.T, activations[-k-1])  #[~delta.mask]  #numpy.multiply(delta , testyy)
             
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
