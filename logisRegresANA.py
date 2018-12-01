@@ -290,6 +290,7 @@ def get_predictions(test_Y, biases, weights):
     return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
+        print('y.shape : ',y.shape)
         return np.dot((a.compressed().reshape(y.shape))-y), sigmoid_prime(z.compressed().reshape(y.shape))   #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
