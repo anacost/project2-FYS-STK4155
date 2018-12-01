@@ -289,8 +289,8 @@ def get_predictions(test_Y, biases, weights):
     feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
     return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
-    if(method=='ce'): 
-        return np.dot((a.compressed().reshape((sizes[-1]))-y), sigmoid_prime(z.compressed().reshape((sizes[-1]))))   #'ce' for cross-entropy loss function
+    if(method=='ce'):      
+        return np.dot((a.compressed().reshape(y.shape))-y), sigmoid_prime(z.compressed().reshape(y.shape))   #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
