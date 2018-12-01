@@ -292,7 +292,7 @@ def cost_delta(method, z, a , y):
     if(method=='ce'):      
         print('y.shape : ',y.shape)
         print('a.compressed().shape ' ,a.compressed().shape) 
-        return np.dot((a.compressed() -y), sigmoid_prime(z.compressed())   #'ce' for cross-entropy loss function
+        return np.dot((a.compressed() -y), sigmoid_prime(z.compressed()) )  #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
