@@ -274,7 +274,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             delta = np.dot(weights[-k+1].transpose(), delta) * sp
             #sum(np.multiply(np.dot(np.array(weights[-1- (k-1)]).T ,delta).flatten() ,sp)) #(numpy.array(weights[-1- (k-1)]).T * delta) *sp
             print('delta in loop k ',delta.shape, delta)
-            nabla_b_backprop[- k] = delta
+            print('delta[~delta.mask] ', delta[~delta.mask])
+            nabla_b_backprop[- k] = delta[~delta.mask]
             #testyy = np.array(activations[-1 - (k+1)]) #numpy.array(activations[-1 - (k+1)]).T
             #print('testyy', testyy)
             nabla_w_backprop[-(k)] = np.dot(delta, activations[-k-1].transpose())#np.multiply(testyy, delta) #numpy.multiply(delta , testyy)
@@ -291,8 +292,9 @@ def get_predictions(test_Y, biases, weights):
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
         print('y.shape : ',y.shape)
-        print('a.compressed().shape ' ,a.compressed().shape) 
-        return np.dot((a.compressed() -y), sigmoid_prime(z.compressed()) )  #'ce' for cross-entropy loss function
+        print('a.compressed().shape ' ,a.compressed().shape) #delta[~delta.mask]
+        return np.dot((a[~a.mask] -y), sigmoid_prime(z[~z.mask]) )  #'ce' for cross-entropy loss function
+        #return np.dot((a.compressed() -y), sigmoid_prime(z.compressed()) )  #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
