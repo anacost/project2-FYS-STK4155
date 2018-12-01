@@ -11,7 +11,7 @@ def sigmoid(inX):
     return 1.0/(1+np.exp(-inX))
 def sigmoid_prime(x):
     '''derivative of sigmoid/logistic function'''
-    p = np.exp(-z)
+    p = np.exp(-x)
     return p / ((1 + p)**2)
     #return sigmoid(x) * (1 - sigmoid(x))
 def predict(weights, inputs):
