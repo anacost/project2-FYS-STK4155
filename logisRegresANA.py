@@ -11,9 +11,7 @@ def sigmoid(inX):
     return 1.0/(1+np.exp(-inX))
 def sigmoid_prime(x):
     '''derivative of sigmoid/logistic function'''
-    p = np.exp(-x)
-    return p / ((1 + p)**2)
-    #return sigmoid(x) * (1 - sigmoid(x))
+    return sigmoid(x) * (1 - sigmoid(x))
 def predict(weights, inputs):
     return sigmoid(np.dot(inputs, weights))
 def logistic_log_likelihoodi(xi, yi, weights):
@@ -213,6 +211,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     listb = sizes[1:]
     nabla_b_backprop = np.dot(0., biases)     #numpy.array([[0] for _ in listb])
     nabla_w_backprop = np.dot(0., weights)
+    print('weights[-1]: ', weights[-1].shape, weights[-1])
+    print('nabla_w_backprop: ', nabla_w_backprop[-1].shape, nabla_w_backprop[-1])
     #Feed-forward (get predictions)
     print('x : ', x)
     print('type(x) ', type(x))
@@ -253,32 +253,41 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
     print('zs stored :' , zs)
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)
-    #print('DELTA : ', delta)   
+    print('DELTA : ', delta)   
     nabla_b_backprop[-1] = delta
     #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
     #if len(delta.shape)== 1: delta = delta[0]
-    print(delta, np.array(activations[-2]).transpose())
+    print(delta)
+    print('activations[-2] ', activations[-2])
     print('delta.shape, np.array(activations[-2]).transpose().shape : ', delta.shape, np.array(activations[-2]).transpose().shape)
     nabla_w_backprop[-1] = np.dot(delta , activations[-2]) 
     #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
+    print('nabla_w_backprop[-1].shape :', nabla_w_backprop[-1].shape)
     print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
-    
+    print(nabla_w_backprop[-1][~nabla_w_backprop[-1].mask].shape)
+    print('weights[-1]: ', weights[-1].shape, weights[-1])
     #Second to second-to-last-layer
     #if no hidden layer reduces to multinomial logit
     if (num_layers>2):
         for k in range(2,(num_layers)):
             print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-k])
-            
+            print('zs[-k] ', zs[-k])
+            print('sp ', sp)
             print('weights[-k+1].transpose() ', weights[-k+1].transpose())
             print('delta ', delta)
-            print('sp ', sp)
+            
+            
             delta = np.dot(weights[-k+1].transpose(), delta) * sp
    
             print('delta in loop k ',delta.shape, delta)
             print('delta[~delta.mask] ', delta[~delta.mask])
             nabla_b_backprop[- k] = delta[~delta.mask]
-           
+            print('nabla_b_backprop[-k] ', nabla_b_backprop[-k].shape,nabla_b_backprop[-k])
+            print('delta.shape ', delta.shape, 'activations[-k-1].shape ', activations[-k-1].shape, activations[-k-1]) 
+            print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
+            print('weights ', weights.shape, weights)
+            print('weights[-k] ', weights[-k].shape, weights[-k])
             nabla_w_backprop[-(k)] = np.dot(delta.T, activations[-k-1])  #[~delta.mask]  #numpy.multiply(delta , testyy)
             
     return nabla_b_backprop, nabla_w_backprop
