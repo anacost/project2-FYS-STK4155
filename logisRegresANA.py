@@ -228,14 +228,14 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     activations[i][:len(activation)]  = activation
     
     for b, w in zip(biases,weights):
-        print(w.shape, activation.shape, b.shape)
-        print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
+        print('w.shape, activations[i].shape, b.shape: ',w.shape, activations[i].shape, b.shape)
+        print('w , b : ', w, b)
+        #print('compressed: ', w.compressed().shape, activation.shape, b.compressed().shape)
         #z = np.dot(w.compressed().reshape((listb[i],listw[i])) , activation) + b.compressed() #np.dot(w, activation) +b
-        z = np.dot(w, activations[i]) +b
+        z = np.ma.dot(w, activations[i],strict=True) +b
         #print('b :', b)
         #print('z = w_a + b : ', z)
-        print('z ', z)
-        print('z.shape ', z.shape)
+        print('z: ', z.shape, z)
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
@@ -300,10 +300,11 @@ def get_predictions(test_Y, biases, weights):
     return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
-        print('y.shape : ',y.shape)
-        print('a.compressed().shape ' ,a.compressed().shape) #delta[~delta.mask]
-        return np.ma.dot((a -y), sigmoid_prime(z), strict=True )  #'ce' for cross-entropy loss function
-        #return np.dot((a[~a.mask] -y), sigmoid_prime(z[~z.mask]) )  #'ce' for cross-entropy loss function
+        #print('y.shape : ',y.shape, y)
+        #print('a.compressed().shape ' ,a.compressed().shape, a.compressed().reshape(y.shape)) #delta[~delta.mask]
+        #print('a: ', a.shape, a)
+        #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z), sigmoid_prime(z).compressed().reshape(y.shape))
+        return np.ma.dot((a.compressed().reshape(y.shape) - y), sigmoid_prime(z).compressed().reshape(y.shape)) #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
