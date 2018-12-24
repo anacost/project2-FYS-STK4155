@@ -212,7 +212,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     nabla_b_backprop = np.dot(0., biases)     #numpy.array([[0] for _ in listb])
     nabla_w_backprop = np.dot(0., weights)
     print('weights[-1]: ', weights[-1].shape, weights[-1])
-    print('nabla_w_backprop: ', nabla_w_backprop[-1].shape, nabla_w_backprop[-1])
+    print('nabla_w_backprop[-1]: ', nabla_w_backprop[-1].shape, nabla_w_backprop[-1])
     #Feed-forward (get predictions)
     print('x : ', x)
     print('type(x) ', type(x))
@@ -260,7 +260,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     print(delta)
     print('activations[-2] ', activations[-2])
     print('delta.shape, np.array(activations[-2]).transpose().shape : ', delta.shape, np.array(activations[-2]).transpose().shape)
-    nabla_w_backprop[-1] = np.dot(delta , activations[-2]) 
+    nabla_w_backprop[-1] = np.ma.dot(delta , activations[-2], strict=True) 
     #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
     print('nabla_w_backprop[-1].shape :', nabla_w_backprop[-1].shape)
     print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
@@ -277,18 +277,17 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print('weights[-k+1].transpose() ', weights[-k+1].transpose())
             print('delta ', delta)
             
-            
-            delta = np.dot(weights[-k+1].transpose(), delta) * sp
+            delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp
    
             print('delta in loop k ',delta.shape, delta)
             print('delta[~delta.mask] ', delta[~delta.mask])
-            nabla_b_backprop[- k] = delta[~delta.mask]
+            nabla_b_backprop[- k] = delta    #delta[~delta.mask]
             print('nabla_b_backprop[-k] ', nabla_b_backprop[-k].shape,nabla_b_backprop[-k])
             print('delta.shape ', delta.shape, 'activations[-k-1].shape ', activations[-k-1].shape, activations[-k-1]) 
             print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
             print('weights ', weights.shape, weights)
             print('weights[-k] ', weights[-k].shape, weights[-k])
-            nabla_w_backprop[-(k)] = np.dot(delta.T, activations[-k-1])  #[~delta.mask]  #numpy.multiply(delta , testyy)
+            nabla_w_backprop[-(k)] = np.ma.dot(delta.T, activations[-k-1],strict=True)  
             
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
@@ -303,8 +302,8 @@ def cost_delta(method, z, a , y):
     if(method=='ce'):      
         print('y.shape : ',y.shape)
         print('a.compressed().shape ' ,a.compressed().shape) #delta[~delta.mask]
-        return np.dot((a[~a.mask] -y), sigmoid_prime(z[~z.mask]) )  #'ce' for cross-entropy loss function
-        #return np.dot((a.compressed() -y), sigmoid_prime(z.compressed()) )  #'ce' for cross-entropy loss function
+        return np.ma.dot((a -y), sigmoid_prime(z), strict=True )  #'ce' for cross-entropy loss function
+        #return np.dot((a[~a.mask] -y), sigmoid_prime(z[~z.mask]) )  #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
