@@ -127,21 +127,15 @@ def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
     num_layers= len(sizes)
     listw = sizes[:-1] #not including the index -1 (last)
     listb = sizes[1:] # skips first element 
-    #print('listb ', listb)
-    #print('listw ', listw)
-    #initialises with gaussian distribution for biases and weights
-    #biases = np.array([[random.gauss(0,1) for _ in range(b)] for _,b in enumerate(listb)])
-    #weights = np.array([[[random.gauss(0,1) for _ in range(w)] for _ in range(b)] for w,b in zip(listw,listb)])
-    #biases = np.array(list(map(np.array, biases)))
-    #weights = np.array(list(map(np.array, weights)))
-    biases = [np.random.randn(max(listb)) for _ in listb]
+
+    biases = [np.random.randn(max(sizes)) for _ in listb]#[np.random.randn(max(listb)) for _ in listb]
     biases = np.stack(biases, axis=0)
-    biases = ma.array(biases, mask=[[0]*listbi+[1]*(max(listb)-listbi) for listbi in listb])
-    weights = [np.random.randn(max(listb),max(listw)) for _,_ in zip(listw,listb)]
+    biases = ma.array(biases, mask=[[0]*listbi+[1]*(max(sizes)-listbi) for listbi in listb])#ma.array(biases, mask=[[0]*listbi+[1]*(max(listb)-listbi) for listbi in listb])
+    weights = [np.random.randn(max(sizes),max(sizes)) for _,_ in zip(listw,listb)]#[np.random.randn(max(listb),max(listw)) for _,_ in zip(listw,listb)]
     weights = np.stack(weights, axis=0)
     #mask for weights:
-    marraysw = [np.pad(np.zeros((listbi,listwi)), ((0, max(listb)-listbi),(0,max(listw)-listwi)), 'constant', constant_values=1) for listwi,listbi in zip(listw,listb)]
-
+    marraysw=[np.pad(np.zeros((listbi,listwi)),((0,max(sizes)-listbi),(0,max(sizes)-listwi)),'constant',constant_values=1) for listwi,listbi in zip(listw,listb)]
+#[np.pad(np.zeros((listbi,listwi)), ((0, max(listb)-listbi),(0,max(listw)-listwi)), 'constant', constant_values=1) for listwi,listbi in zip(listw,listb)]
     marraysw = np.stack(marraysw, axis=0)
     weights = ma.array(weights, mask=marraysw)
     #print('biases initial ', biases)
@@ -252,18 +246,18 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #last layer
     #print( 'in last layer, y ', y, 'activations[-1 ]', activations[-1])
     print('zs stored :' , zs)
-    delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)
-    print('DELTA : ', delta)   
+    print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
+    delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)  
     nabla_b_backprop[-1] = delta
+    print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
+    print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
     #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
     #if len(delta.shape)== 1: delta = delta[0]
-    print(delta)
-    print('activations[-2] ', activations[-2])
-    print('delta.shape, np.array(activations[-2]).transpose().shape : ', delta.shape, np.array(activations[-2]).transpose().shape)
+    print('delta: ',delta.shape, delta)
+    print('activations[-2]: ',activations[-2].shape, activations[-2])
+    print('np.ma.dot(delta , activations[-2], strict=True) ', np.ma.dot(delta , activations[-2], strict=True) )
     nabla_w_backprop[-1] = np.ma.dot(delta , activations[-2], strict=True) 
-    #print('in backprop: nabla_b_backprop[-1] ', nabla_b_backprop[-1] )
-    print('nabla_w_backprop[-1].shape :', nabla_w_backprop[-1].shape)
-    print('in backprop: nabla_w_backprop[-1] ', nabla_w_backprop[-1] )
+    print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
     print(nabla_w_backprop[-1][~nabla_w_backprop[-1].mask].shape)
     print('weights[-1]: ', weights[-1].shape, weights[-1])
     #Second to second-to-last-layer
@@ -273,7 +267,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-k])
             print('zs[-k] ', zs[-k])
-            print('sp ', sp)
+            print('sp ', sp.shape, sp)
             print('weights[-k+1].transpose() ', weights[-k+1].transpose())
             print('delta ', delta)
             
@@ -304,7 +298,8 @@ def cost_delta(method, z, a , y):
         #print('a.compressed().shape ' ,a.compressed().shape, a.compressed().reshape(y.shape)) #delta[~delta.mask]
         #print('a: ', a.shape, a)
         #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z), sigmoid_prime(z).compressed().reshape(y.shape))
-        return np.ma.dot((a.compressed().reshape(y.shape) - y), sigmoid_prime(z).compressed().reshape(y.shape)) #'ce' for cross-entropy loss function
+        #return np.ma.dot((a.compressed().reshape(y.shape) - y), sigmoid_prime(z).compressed().reshape(y.shape)) #'ce' for cross-entropy loss function
+        return np.ma.dot((a - y), sigmoid_prime(z)) #'ce' for cross-entropy loss function
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
