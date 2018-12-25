@@ -257,7 +257,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     print('delta: ',delta.shape, delta)
     print('activations[-2]: ',activations[-2].shape, activations[-2])
     print('np.ma.dot(delta , activations[-2], strict=True) ', np.ma.dot(delta , activations[-2], strict=True) )
-    nabla_w_backprop[-1] = np.ma.dot(delta , activations[-2], strict=True) 
+    nablaw = np.ma.dot(delta , activations[-2], strict=True) 
+    nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
     print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
     print(nabla_w_backprop[-1][~nabla_w_backprop[-1].mask].shape)
     print('weights[-1]: ', weights[-1].shape, weights[-1])
