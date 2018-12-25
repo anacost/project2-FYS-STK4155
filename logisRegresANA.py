@@ -277,7 +277,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
    
             print('delta in loop k ',delta.shape, delta)
             print('delta[~delta.mask] ', delta[~delta.mask])
-            nabla_b_backprop[- k] = delta    #delta[~delta.mask]
+            nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  
             print('nabla_b_backprop[-k] ', nabla_b_backprop[-k].shape,nabla_b_backprop[-k])
             print('delta.shape ', delta.shape, 'activations[-k-1].shape ', activations[-k-1].shape, activations[-k-1]) 
             print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
