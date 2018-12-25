@@ -248,7 +248,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     print('zs stored :' , zs)
     print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)  
-    nabla_b_backprop[-1] = delta
+    print('delta :', delta)
+    nabla_b_backprop[-1][~nabla_b_backprop[-1].mask] = delta
     print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
     print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
     #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
@@ -268,7 +269,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             sp = sigmoid_prime(zs[-k])
             print('zs[-k] ', zs[-k])
             print('sp ', sp.shape, sp)
-            print('weights[-k+1].transpose() ', weights[-k+1].transpose())
+            print('weights[-k+1].transpose() ',weights[-k+1].transpose().shape, weights[-k+1].transpose())
             print('delta ', delta)
             
             delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp
@@ -294,12 +295,13 @@ def get_predictions(test_Y, biases, weights):
     return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
-        #print('y.shape : ',y.shape, y)
+        print('y.shape : ',y.shape, y)
         #print('a.compressed().shape ' ,a.compressed().shape, a.compressed().reshape(y.shape)) #delta[~delta.mask]
-        #print('a: ', a.shape, a)
-        #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z), sigmoid_prime(z).compressed().reshape(y.shape))
-        #return np.ma.dot((a.compressed().reshape(y.shape) - y), sigmoid_prime(z).compressed().reshape(y.shape)) #'ce' for cross-entropy loss function
-        return np.ma.dot((a - y), sigmoid_prime(z)) #'ce' for cross-entropy loss function
+        print('a: ', a.shape, a)
+        print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z))
+        print('(a-y) ',(a-y).shape, (a-y))
+        return np.ma.dot((a - y), sigmoid_prime(z),strict=True) #'ce' for cross-entropy loss function
+    #ma.array( ,mask=np.getmaskarray(a))
 def evaluate(X_test, Y_test, biases, weights):
         
     pred = get_predictions(X_test, biases, weights)
