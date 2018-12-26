@@ -237,8 +237,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
 
     #print('activations[-2]: ',activations[-2].shape, activations[-2])
-
-    nablaw = np.ma.dot(delta , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
+    print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
+    nablaw = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
     nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
     #print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
 
@@ -262,8 +262,8 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
 
             print('delta ', delta.shape, delta)
             print('activations[-k-1].reshape((1,len(activations[-k-1]))) ', activations[-k-1].reshape((1,len(activations[-k-1]))).shape, activations[-k-1].reshape((1,len(activations[-k-1]))))
-           
-            nabla_w = np.ma.dot(delta, activations[-k-1].reshape((1,len(activations[-k-1]))),strict=True)
+            print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
+            nabla_w = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)), activations[-k-1].reshape((1,len(activations[-k-1]))),strict=True)
             print('nabla_w ', nabla_w.shape, nabla_w)
             nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nabla_w[~nabla_w.mask]  
             print('nabla_w_backprop[-k]: ',nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
