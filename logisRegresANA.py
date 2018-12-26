@@ -150,9 +150,10 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
         mini_batches =  np.split(training_data, math.ceil(Y_train.shape[0]/mini_batch_size))#
                 
         #feed-forward (and back) all mini_batches
-        for _, minib in enumerate(mini_batches):
+        for i, minib in enumerate(mini_batches):
             biases, weights = update_mini_batch(minib, lr, C, sizes, num_layers,biases,weights)
-            
+            print(i, 'biases ', biases)
+            print(i, 'weights ', weights)
         if(verbose):
             if(j % 1 ==0): 
                 print('Epoch ', j, ' finished' )
@@ -237,7 +238,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
 
     #print('activations[-2]: ',activations[-2].shape, activations[-2])
-    print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
+    #print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
     nablaw = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
     nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
     #print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
@@ -246,7 +247,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #if no hidden layer reduces to multinomial logit
     if (num_layers>2):
         for k in range(2,(num_layers)):
-            print("ENTRA NESTE LOOP, k = ", k)
+            #print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-k])
             
             #print('sp ', sp.shape, sp)
@@ -257,16 +258,15 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             #print('delta in loop k ',delta.shape, delta)
             #print('delta[~delta.mask] ', delta[~delta.mask])
             nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  #correcto
+            #print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
 
-            print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
-
-            print('delta ', delta.shape, delta)
-            print('activations[-k-1].reshape((1,len(activations[-k-1]))) ', activations[-k-1].reshape((1,len(activations[-k-1]))).shape, activations[-k-1].reshape((1,len(activations[-k-1]))))
-            print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
+            #print('delta ', delta.shape, delta)
+            #print('activations[-k-1].reshape((1,len(activations[-k-1]))) ', activations[-k-1].reshape((1,len(activations[-k-1]))).shape, activations[-k-1].reshape((1,len(activations[-k-1]))))
+            #print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
             nabla_w = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)), activations[-k-1].reshape((1,len(activations[-k-1]))),strict=True)
-            print('nabla_w ', nabla_w.shape, nabla_w)
+            #print('nabla_w ', nabla_w.shape, nabla_w)
             nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nabla_w[~nabla_w.mask]  
-            print('nabla_w_backprop[-k]: ',nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
+            #print('nabla_w_backprop[-k]: ',nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
     for b,w in zip(biases,weights):
@@ -277,11 +277,10 @@ def get_predictions(test_Y, biases, weights):
     return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
-        print('y.shape : ',y.shape, y)
-        #print('a.compressed().shape ' ,a.compressed().shape, a.compressed().reshape(y.shape)) #delta[~delta.mask]
-        print('a: ', a.shape, a)
-        print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z))
-        print('(a-y) ',(a-y).shape, (a-y))
+        #print('y.shape : ',y.shape, y)
+        #print('a: ', a.shape, a)
+        #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z))
+        #print('(a-y) ',(a-y).shape, (a-y))
         return np.ma.dot((a - y), sigmoid_prime(z),strict=True) #'ce' for cross-entropy loss function
     #ma.array( ,mask=np.getmaskarray(a))
 def evaluate(X_test, Y_test, biases, weights):
