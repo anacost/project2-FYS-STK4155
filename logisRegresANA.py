@@ -208,12 +208,11 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('type(x) ', type(x))
     #print('shape of x : ', x.shape)
     activation = np.array(x)           #first activation is input vector x
-    activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])#[np.array(list(x))]
+    activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])
     
     #print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
-    #print('weights ', weights)
-    #print('shape of weights ', weights.shape)
+  
     i= 0
     activations[i][:len(activation)]  = activation
     
@@ -242,15 +241,15 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     #print('delta :', delta)
     nabla_b_backprop[-1][~nabla_b_backprop[-1].mask] = delta
     #print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
-    #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
+    print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
     #print('in backprop: numpy.array(activations[-2]).T ', np.array(activations[-2]).transpose() )
     #if len(delta.shape)== 1: delta = delta[0]
     #print('delta: ',delta.shape, delta)
-    #print('activations[-2]: ',activations[-2].shape, activations[-2])
+    print('activations[-2]: ',activations[-2].shape, activations[-2])
     #print('np.ma.dot(delta , activations[-2], strict=True) ', np.ma.dot(delta , activations[-2], strict=True) )
-    nablaw = np.ma.dot(delta , activations[-2], strict=True) 
+    nablaw = np.ma.dot(delta , activations[-2].reshape((len(activations[-2]),1)), strict=True) 
     nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
-    #print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
+    print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
     #print(nabla_w_backprop[-1][~nabla_w_backprop[-1].mask].shape)
     #print('weights[-1]: ', weights[-1].shape, weights[-1])
     #Second to second-to-last-layer
@@ -260,20 +259,28 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             print("ENTRA NESTE LOOP, k = ", k)
             sp = sigmoid_prime(zs[-k])
             #print('zs[-k] ', zs[-k])
-            #print('sp ', sp.shape, sp)
-            #print('weights[-k+1].transpose() ',weights[-k+1].transpose().shape, weights[-k+1].transpose())
-            #print('delta ', delta)
+            print('sp ', sp.shape, sp)
+            print('weights[-k+1].transpose() ',weights[-k+1].transpose().shape, weights[-k+1].transpose())
+            print('delta - que entra no loop ', delta)
+            print('delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp ')
             delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp
             #print('delta in loop k ',delta.shape, delta)
             #print('delta[~delta.mask] ', delta[~delta.mask])
-            nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  
+            nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  #correcto
             #print('nabla_b_backprop[-k] ', nabla_b_backprop[-k].shape,nabla_b_backprop[-k])
             #print('delta.shape ', delta.shape, 'activations[-k-1].shape ', activations[-k-1].shape, activations[-k-1]) 
-            #print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
+            print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
             #print('weights ', weights.shape, weights)
             #print('weights[-k] ', weights[-k].shape, weights[-k])
-            nabla_w = np.ma.dot(delta.T, activations[-k-1],strict=True) 
-            nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nablaw[~nablaw.mask]  
+            print('delta ', delta.shape, delta)
+            print('activations[-k-1] ', activations[-k-1].shape, activations[-k-1])
+            print('activations[-k-1].reshape((1,len(activations[-k-1]))).shape ',activations[-k-1].reshape((len(activations[-k-1]),1)).shape, activations[-k-1].reshape((len(activations[-k-1]),1)))
+            
+            #print('np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True) ',np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True).shape,np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True))
+            print('np.ma.dot(delta, activations[-k-1].T,strict=True) ',np.ma.dot(delta, activations[-k-1].T,strict=True).shape,np.ma.dot(delta, activations[-k-1].T,strict=True))
+            nabla_w = np.ma.dot(delta.T,activations[-k-1],strict=True)#np.ma.outer(delta[~delta.mask], activations[-k-1].T) 
+            print('nabla_w ', nabla_w.shape, nabla_w)
+            nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nabla_w[~nabla_w.mask]  
             print('nabla_w_backprop[-k]: ',nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
