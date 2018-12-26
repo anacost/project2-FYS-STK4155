@@ -274,10 +274,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
             #print('weights[-k] ', weights[-k].shape, weights[-k])
             print('delta ', delta.shape, delta)
             print('activations[-k-1] ', activations[-k-1].shape, activations[-k-1])
-            print('activations[-k-1].reshape((1,len(activations[-k-1]))).shape ',activations[-k-1].reshape((len(activations[-k-1]),1)).shape, activations[-k-1].reshape((len(activations[-k-1]),1)))
-            
-            #print('np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True) ',np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True).shape,np.ma.dot(delta, activations[-k-1].reshape((len(activations[-k-1]),1)),strict=True))
-            print('np.ma.dot(delta, activations[-k-1].T,strict=True) ',np.ma.dot(delta, activations[-k-1].T,strict=True).shape,np.ma.dot(delta, activations[-k-1].T,strict=True))
+           
             nabla_w = np.ma.dot(delta.T,activations[-k-1],strict=True)#np.ma.outer(delta[~delta.mask], activations[-k-1].T) 
             print('nabla_w ', nabla_w.shape, nabla_w)
             nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nabla_w[~nabla_w.mask]  
