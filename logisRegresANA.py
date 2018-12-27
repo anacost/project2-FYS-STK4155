@@ -151,9 +151,10 @@ def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
                 
         #feed-forward (and back) all mini_batches
         for i, minib in enumerate(mini_batches):
+            lr = learning_schedule(j*math.ceil(Y_train.shape[0]/mini_batch_size) + i)
             biases, weights = update_mini_batch(minib, lr, C, sizes, num_layers,biases,weights)
-            print(i, 'biases ', biases)
-            print(i, 'weights ', weights)
+            #print(i, 'biases ', biases)
+            #print(i, 'weights ', weights)
         if(verbose):
             if(j % 1 ==0): 
                 print('Epoch ', j, ' finished' )
@@ -406,8 +407,7 @@ def loadDataSet():
         labelMat.append(int(lineArr[2]))
     return dataMat,labelMat
 def learning_schedule(t):
-    t0, t1 = 4.0, 5.0
-    alpha=0.0001
+    t0, t1 = 5.0, 50.0
     return t0/(t + t1)
 def sgd(dataMatrix, classLabels):
     n_epochs = 200
