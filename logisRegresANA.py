@@ -5,7 +5,7 @@ import random
 #from autograd import grad
 import numpy as np
 import numpy.ma as ma   #maskedarrays
-import pandas
+
 def sigmoid(inX):
     #return 0.5*(np.tanh(x) + 1)
     return 1.0/(1+np.exp(-inX))
@@ -272,9 +272,9 @@ def feedforward(a, biases, weights):
     for b,w in zip(biases,weights):
         a = sigmoid(np.dot(w, a) + b)
     return a
-def get_predictions(test_Y, biases, weights):
-    feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
-    return pandas.Series(feedfor).idxmax()
+#def get_predictions(test_Y, biases, weights):
+#    feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
+#    return pandas.Series(feedfor).idxmax()
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
         #print('y.shape : ',y.shape, y)
@@ -295,7 +295,7 @@ def evaluate(X_test, Y_test, biases, weights):
     #Confusion
     #rows = []
     #res = pandas.DataFrame({'Prediction': pred.T, 'Truth': truths.T})#, index=rows )  #pred truths as dataframe
-    return res
+    #return res
 ########################################end: Neural network
 def in_random_order(data):
     """generator that returns the elements of data in random order"""
