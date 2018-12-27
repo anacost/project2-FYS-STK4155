@@ -283,6 +283,8 @@ def cost_delta(method, z, a , y):
         #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z))
         #print('(a-y) ',(a-y).shape, (a-y))
         return np.ma.dot((a - y), sigmoid_prime(z),strict=True) #'ce' for cross-entropy loss function
+    if(method=='re'):
+        return 0.5*sum((a-y)**2)
     
 def evaluate(X_test, Y_test, biases, weights):
     test_result = [(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
