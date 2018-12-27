@@ -231,9 +231,9 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         activations[i][:len(activation)] = activation
     #Backwards (update gradients using errors)
     #last layer
-    print('activations: ', activations)
+    #print('activations: ', activations)
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)  
-    print('delta :', delta)
+    #print('delta :', delta)
     nabla_b_backprop[-1][~nabla_b_backprop[-1].mask] = delta
     #print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
     #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
