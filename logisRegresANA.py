@@ -274,7 +274,7 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
     for b,w in zip(biases,weights):
-        a = sigmoid(np.dot(w, a) + b)
+        a = sigmoid(np.ma.dot(w, a,strict=True) +b)    #sigmoid(np.dot(w, a) + b)
     return a
 #def get_predictions(test_Y, biases, weights):
 #    feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
