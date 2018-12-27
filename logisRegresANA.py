@@ -231,16 +231,19 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
         activations[i][:len(activation)] = activation
     #Backwards (update gradients using errors)
     #last layer
-
+    print('activations: ', activations)
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)  
-    #print('delta :', delta)
+    print('delta :', delta)
     nabla_b_backprop[-1][~nabla_b_backprop[-1].mask] = delta
     #print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
     #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
 
     #print('activations[-2]: ',activations[-2].shape, activations[-2])
     #print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
-    nablaw = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
+    if type(delta)==np.float64:
+        nablaw = np.dot(delta, activations[-2])
+    else:
+        nablaw = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
     nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
     #print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
 
@@ -284,7 +287,7 @@ def cost_delta(method, z, a , y):
         #print('(a-y) ',(a-y).shape, (a-y))
         return np.ma.dot((a - y), sigmoid_prime(z),strict=True) #'ce' for cross-entropy loss function
     if(method=='re'):
-        return 0.5*sum((a-y)**2)
+        return 0.5*(((a-y))**2).sum()
     
 def evaluate(X_test, Y_test, biases, weights):
     test_result = [(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
