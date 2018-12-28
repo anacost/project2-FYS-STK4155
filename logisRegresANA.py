@@ -301,9 +301,12 @@ def evaluater(X_test, Y_test, biases, weights):
     
 def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
-    print([feedforward(x,biases,weights).compressed() for x in X_test])
-    test_result = [(feedforward(x,biases,weights).compressed().flatten(),y) for (x,y) in zip(X_test,Y_test)]#[(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
+    #print([feedforward(x,biases,weights).compressed() for x in X_test])
+    test_result = [(classifyf(feedforward(x,biases,weights).compressed()), y) for (x,y) in zip(X_test,Y_test)]#
     return sum(int(x==y) for (x,y) in test_result)
+def classifyf(prob):
+    if prob > 0.5: return 1
+    else: return 0
 
 def simptest(weights, X_test, Y_test):
     intercept = np.ones((X_test.shape[0], 1))
