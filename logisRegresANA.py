@@ -89,7 +89,7 @@ def log_likelihood(xb, y, weights):
     return sum(ll)
 ##########################Neural network:
 def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
-                  epochs=30,mini_batch_size=10,lr=0.05,C='ce'):
+                  epochs=30,mini_batch_size=10,C='ce'):
     num_layers= len(sizes)
     listw = sizes[:-1] #not including the index -1 (last)
     listb = sizes[1:] # skips first element 
@@ -109,7 +109,7 @@ def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
     biases, weights = SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers, 
         biases, weights, verbose, validation_x, validation_y)
     return biases, weights
-def SGD(X_train, Y_train, epochs, mini_batch_size, lr, C, sizes, num_layers,
+def SGD(X_train, Y_train, epochs, mini_batch_size, C, sizes, num_layers,
        biases, weights, verbose, validation_x, validation_y):
     #every epoch
     training_data =np.concatenate((X_train,np.array([Y_train]).T),axis=1) # zip(X_train,Y_train)
