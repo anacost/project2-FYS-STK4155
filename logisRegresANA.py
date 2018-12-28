@@ -301,19 +301,30 @@ def evaluater(X_test, Y_test, biases, weights):
     
 def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
-    #print([feedforward(x,biases,weights).compressed() for x in X_test])
+    print([feedforward(x,biases,weights).compressed() for x in X_test])
     test_result = [(feedforward(x,biases,weights).compressed().flatten(),y) for (x,y) in zip(X_test,Y_test)]#[(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
     return sum(int(x==y) for (x,y) in test_result)
-    #pred = get_predictions(X_test, biases, weights)
-    #truths = pandas.Series(Y_test).idxmax()
-    #Accuracy
-    #correct = np.sum([1 for x, y in zip(pred,truths) if x==y ])
-    #total = Y_test.shape[0]
-    #print(correct/total)
-    #Confusion
-    #rows = []
-    #res = pandas.DataFrame({'Prediction': pred.T, 'Truth': truths.T})#, index=rows )  #pred truths as dataframe
-    #return res
+
+def simptest(weights, X_test, Y_test):
+    intercept = np.ones((X_test.shape[0], 1))
+    X_test = np.concatenate((intercept, X_test), axis=1) 
+    errorCount = 0; numTestVec = 0.0
+    
+    for lineX, lineY in zip(X_test, Y_test):
+        numTestVec += 1.0
+        
+        if int(classifyVector(lineX, weights))!= int(lineY):
+            errorCount += 1
+    errorRate = (float(errorCount)/numTestVec)
+    print( "the error rate of this test is: %f" % errorRate)
+    print("accuracy is %f" %  (1-errorRate))
+    return errorRate
+def classifyVector(inX, weights):
+    prob = sigmoid(sum(inX*weights))
+    if prob > 0.5: return 1.0
+    else: return 0.0
+
+
 ########################################end: Neural network
 def in_random_order(data):
     """generator that returns the elements of data in random order"""
@@ -366,6 +377,10 @@ def simptest(weights, X_test, Y_test):
     print( "the error rate of this test is: %f" % errorRate)
     print("accuracy is %f" %  (1-errorRate))
     return errorRate
+def classifyVector(inX, weights):
+    prob = sigmoid(sum(inX*weights))
+    if prob > 0.5: return 1.0
+    else: return 0.0
 
 def plotBestFit(weights):
     import matplotlib.pyplot as plt
@@ -389,10 +404,7 @@ def plotBestFit(weights):
     plt.xlabel('X1'); plt.ylabel('X2');
     plt.show()
     
-def classifyVector(inX, weights):
-    prob = sigmoid(sum(inX*weights))
-    if prob > 0.5: return 1.0
-    else: return 0.0
+
 
 def test(X_train, Y_train, X_test, Y_test):
     #frTrain = open('horseColicTraining.txt'); frTest = open('horseColicTest.txt')
