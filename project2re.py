@@ -2,8 +2,6 @@ import glob
 import os
 import numpy as np
 import pickle
-#from sklearn.model_selection import train_test_split
-
 import importlib
 import logisRegresANA
 import warnings
@@ -20,8 +18,6 @@ def ising_energies(states,L):
   return E
 
 def main():
-
-
   np.random.seed(12)
   warnings.filterwarnings('ignore')
 
