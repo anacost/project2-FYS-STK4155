@@ -292,8 +292,7 @@ def cost_delta(method, z, a , y):
 def evaluater(X_test, Y_test, biases, weights):  
     """ for regression  """
     fitted_test = np.array([feedforward(x,biases,weights).compressed() for x in X_test]).flatten()
-    
-    print('fitted_test ' ,fitted_test.shape, fitted_test)#, fitted_test.compressed().shape, fitted_test.compressed())
+    print('fitted_test ' ,fitted_test.shape, fitted_test)
     R2_test = 1 - ( (fitted_test - Y_test)**2 ).sum()/(((Y_test - np.mean(Y_test)))**2).sum()
     MSE_test = np.sum((fitted_test - Y_test)**2)/len(Y_test)
     bias_test = np.sum((Y_test - np.mean(fitted_test))**2)/len(Y_test)
@@ -301,7 +300,10 @@ def evaluater(X_test, Y_test, biases, weights):
     return R2_test, MSE_test, bias_test, var_test
     
 def evaluate(X_test, Y_test, biases, weights):
-    test_result = [(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
+    """ for classification"""
+    print([feedforward(x,biases,weights) for x in X_test])
+    test_result = [(feedforward(x,biases,weights),y) for (x,y) in zip(X_test,Y_test)]#[(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
+    
     return sum(int(x==y) for (x,y) in test_result)
     #pred = get_predictions(X_test, biases, weights)
     #truths = pandas.Series(Y_test).idxmax()
