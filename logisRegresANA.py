@@ -292,7 +292,7 @@ def cost_delta(method, z, a , y):
 def evaluater(X_test, Y_test, biases, weights):  
     """ for regression  """
     fitted_test = np.array([feedforward(x,biases,weights).compressed() for x in X_test]).flatten()
-    print('fitted_test ' ,fitted_test.shape, fitted_test)
+    #print('fitted_test ' ,fitted_test.shape, fitted_test)
     R2_test = 1 - ( (fitted_test - Y_test)**2 ).sum()/(((Y_test - np.mean(Y_test)))**2).sum()
     MSE_test = np.sum((fitted_test - Y_test)**2)/len(Y_test)
     bias_test = np.sum((Y_test - np.mean(fitted_test))**2)/len(Y_test)
