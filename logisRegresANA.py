@@ -155,7 +155,7 @@ def update_mini_batch(minibatch,lr, C,sizes,num_layers,biases,weights):
 def backprop(x, y, C, sizes, num_layers, biases, weights):
     listw = sizes[:-1]
     listb = sizes[1:]
-    nabla_b_backprop = np.dot(0., biases)     )
+    nabla_b_backprop = np.dot(0., biases)     
     nabla_w_backprop = np.dot(0., weights)
 
     activation = np.array(x)           #first activation is input vector x
