@@ -232,26 +232,6 @@ def classifyf(prob):
     if prob > 0.5: return 1
     else: return 0
 
-def simptest(weights, X_test, Y_test):
-    intercept = np.ones((X_test.shape[0], 1))
-    X_test = np.concatenate((intercept, X_test), axis=1) 
-    errorCount = 0; numTestVec = 0.0
-    
-    for lineX, lineY in zip(X_test, Y_test):
-        numTestVec += 1.0
-        
-        if int(classifyVector(lineX, weights))!= int(lineY):
-            errorCount += 1
-    errorRate = (float(errorCount)/numTestVec)
-    print( "the error rate of this test is: %f" % errorRate)
-    print("accuracy is %f" %  (1-errorRate))
-    return errorRate
-def classifyVector(inX, weights):
-    prob = sigmoid(sum(inX*weights))
-    if prob > 0.5: return 1.0
-    else: return 0.0
-
-
 ########################################end: Neural network
 def in_random_order(data):
     """generator that returns the elements of data in random order"""
