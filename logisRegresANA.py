@@ -216,7 +216,6 @@ def cost_delta(method, z, a , y):
 def evaluater(X_test, Y_test, biases, weights):  
     """ for regression  """
     fitted_test = np.array([feedforward(x,biases,weights).compressed() for x in X_test]).flatten()
-    
     R2_test = 1 - ( (fitted_test - Y_test)**2 ).sum()/(((Y_test - np.mean(Y_test)))**2).sum()
     MSE_test = (((fitted_test - Y_test)**2).sum())/len(Y_test)  
     bias_test = np.sum((Y_test - np.mean(fitted_test))**2)/len(Y_test)
@@ -225,7 +224,6 @@ def evaluater(X_test, Y_test, biases, weights):
         
 def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
-   
     test_result = [(classifyf(feedforward(x,biases,weights).compressed()), y) for (x,y) in zip(X_test,Y_test)]#
     return (sum(int(x==y) for (x,y) in test_result))/len(test_result)
 def classifyf(prob):
@@ -239,35 +237,7 @@ def in_random_order(data):
   
     random.shuffle(indexes)                   # shuffle them
     return indexes
-def gradDscent(dataMat, classLabels, alpha = 0.001):
 
-    labelMat = np.mat(classLabels).transpose()
-    dataMat = np.mat(dataMat)
-    m,n = np.shape(dataMat)
-
-    maxCycles = 500
-    weights = numpy.ones((n,1))
-    for k in range(maxCycles):
-        h = sigmoid(dataMat*weights)
-        error = (labelMat - h)
-        weights = weights - alpha * dataMat.transpose()* error
-    return weights
-def stocGradAscentA(dataMatrix, classLabels, numIter=300):     
-    '''dataMatrix is x, classLabels is y (output)'''
-    m,n = np.shape(dataMatrix)
-    weights = np.ones(n)   #initialize to all ones
-
-    for j in range(numIter):
-        for i, index  in enumerate(in_random_order(zip(dataMatrix, classLabels))):
-            dataMatrix_i, classLabels_i = dataMatrix[index], classLabels[index]
-          
-            alpha = 4/(1.0+j+i)+0.0001
-    
-            h = sigmoid(sum(dataMatrix_i*weights))
-            error = h - (classLabels_i)
-  
-            weights = weights - alpha * error * dataMatrix_i
-    return weights
 def simptest(weights, X_test, Y_test):
     intercept = np.ones((X_test.shape[0], 1))
     X_test = np.concatenate((intercept, X_test), axis=1) 
