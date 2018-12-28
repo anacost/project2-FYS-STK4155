@@ -49,41 +49,26 @@ def loss(weights, X_train,Y_train):  #algum erro aqui!!
     
     for i, yi in enumerate(Y_train):   
         label_probabilities=label_probabilities+yi*np.dot(X_train[i], weights) -np.log(1+ np.exp(np.dot(X_train[i],weights)))
-        #if (yi ==1) & (preds[i]!=0):
-        #    label_probabilities = label_probabilities + np.log(preds[i])
-        #elif (yi ==0) & (preds[i]!=1.):
-        #    label_probabilities = label_probabilities + np.log(1-preds[i])
-    #label_probabilities = np.log(preds) * Y_train + (np.log(1- preds))*(1- Y_train)   ####ERRO!!! log em cada termo!!
-    #print('weights', weights)
-    
-    #print('label_probabilities ', label_probabilities)
-    #print(numpy.log(label_probabilities))
-    #if label_probabilities==0.0: print(label_probabilities)
-    #print('- sum', -np.sum(label_probabilities))
+
     return -(label_probabilities)
 
 def grad_loss(weights, X_train, Y_train):
     #x, y = real(z), imag(z)
     return grad(loss, 0)(weights, X_train, Y_train) #derivative wrt. weights
-#def grad_loss(weights, X_train, Y_train):
-#    return grad(logistic_log_likelihood,0)(weights, X_train, Y_train) #derivative wrt. weights
+
 def steepest_descent_auto(X_train, Y_train, alpha =0.001):
     
     X_train = np.array(X_train)
     Y_train = np.array(Y_train)
     intercept = np.ones((X.shape[0], 1))
     X_train   = np.concatenate((intercept, X_train), axis=1) 
-    weights = numpy.ones(X_train.shape[1])
-    #weights = np.random.randn(X_train.shape[1]) 
+    weights = np.ones(X_train.shape[1])
+  
     print('initial weights ', weights)
     loss_values = []
-    #gradientloss = grad(loss)
-    #gradientloss = grad_loss(weights, X_train, Y_train)
+
     for i in range(500):
-        #loss_values.append(logistic_log_likelihood(weights,X_train,Y_train))
-        #loss_values.append(loss(weights,X_train,Y_train))
-        #print('loss_values[-1]', loss_values[-1])
-        #step = grad_loss(weights, X_train, Y_train) #gradientloss(weights,X_train,Y_train)
+
         deriv = sigmoid_prime(np.dot(X_train, weights))
         #print('deriv ', deriv)
         error  = Y_train- predict( weights, X_train)
@@ -104,8 +89,8 @@ def steepest_descent_auto(X_train, Y_train, alpha =0.001):
     
 ################################
 def logistic_reg(X_train, y, epochs, lr):   #ruim...
-    xb = np.c_[numpy.ones((X_train.shape[0],1)),X_train]
-    #beta_hat =  np.linalg.inv(xb.T @ xb) @ xb.T @ y
+    xb = np.c_[np.ones((X_train.shape[0],1)),X_train]
+   
     weights = np.ones(xb.shape[1]) #number of columns of xb
     for j in range(1,epochs):
         residual = sigmoid(xb @ weights) - y
@@ -115,7 +100,7 @@ def logistic_reg(X_train, y, epochs, lr):   #ruim...
     return weights
 def log_likelihood(xb, y, weights):
     scores = xb @ weights
-    ll = (y * scores) - numpy.log(1+ numpy.exp(scores))
+    ll = (y * scores) - np.log(1+ numpy.exp(scores))
     return sum(ll)
 ##########################Neural network:
 def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
@@ -203,27 +188,18 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     listb = sizes[1:]
     nabla_b_backprop = np.dot(0., biases)     #numpy.array([[0] for _ in listb])
     nabla_w_backprop = np.dot(0., weights)
-    #print('weights[-1]: ', weights[-1].shape, weights[-1])
-    #print('nabla_w_backprop[-1]: ', nabla_w_backprop[-1].shape, nabla_w_backprop[-1])
-    #Feed-forward (get predictions)
-    #print('x : ', x)
-    #print('type(x) ', type(x))
-    #print('shape of x : ', x.shape)
+
     activation = np.array(x)           #first activation is input vector x
     activations = ma.array(np.zeros((len(sizes),max(sizes))), mask = [np.pad(np.zeros(sizesi), (0,max(sizes)-sizesi), 'constant', constant_values=1) for sizesi in sizes])
     
-    #print('activations: ',  activations)
     zs = []                               #to store computation in each neuron
-  
     i= 0
     activations[i][:len(activation)]  = activation
     
     for b, w in zip(biases,weights):
-        #print('w.shape, activations[i].shape, b.shape: ',w.shape, activations[i].shape, b.shape)
-        #print('w , b : ', w, b)
+  
         z = np.ma.dot(w, activations[i],strict=True) +b
    
-        #print('z: ', z.shape, z)
         zs.append(z)
         activation = sigmoid(z)    #activation function
         #activations.extend([activation])
@@ -235,56 +211,35 @@ def backprop(x, y, C, sizes, num_layers, biases, weights):
     delta = cost_delta(method= C, z = zs[-1],  a=activations[-1], y = y)  
     #print('delta :', delta)
     nabla_b_backprop[-1][~nabla_b_backprop[-1].mask] = delta
-    #print('nabla_b_backprop[-1]: ', nabla_b_backprop[-1].shape, nabla_b_backprop[-1])
-    #print('nabla_b_backprop: ', nabla_b_backprop.shape, nabla_b_backprop)
 
-    #print('activations[-2]: ',activations[-2].shape, activations[-2])
-    #print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
     if type(delta)==np.float64:
         nablaw = np.dot(delta, activations[-2])
     else:
         nablaw = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) , activations[-2].reshape((1,len(activations[-2]))), strict=True) 
     nabla_w_backprop[-1][~nabla_w_backprop[-1].mask] = nablaw[~nablaw.mask]
-    #print('in backprop: nabla_w_backprop[-1] ',nabla_w_backprop[-1].shape, nabla_w_backprop[-1] )
 
-    #Second to second-to-last-layer
-    #if no hidden layer reduces to multinomial logit
     if (num_layers>2):
         for k in range(2,(num_layers)):
-            #print("ENTRA NESTE LOOP, k = ", k)
+   
             sp = sigmoid_prime(zs[-k])
-            
-            #print('sp ', sp.shape, sp)
-            #print('weights[-k+1].transpose() ',weights[-k+1].transpose().shape, weights[-k+1].transpose())
-            #print('delta - que entra no loop ', delta)
-            #print('delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp ')
+ 
             delta = np.ma.dot(weights[-k+1].transpose(), delta,strict=True) * sp
-            #print('delta in loop k ',delta.shape, delta)
-            #print('delta[~delta.mask] ', delta[~delta.mask])
-            nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  #correcto
-            #print('nabla_w_backprop[-k]: ', nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
-
-            #print('delta ', delta.shape, delta)
-            #print('activations[-k-1].reshape((1,len(activations[-k-1]))) ', activations[-k-1].reshape((1,len(activations[-k-1]))).shape, activations[-k-1].reshape((1,len(activations[-k-1]))))
-            #print('delta[~delta.mask].reshape((len(delta[~delta.mask]),1)) ', delta[~delta.mask].reshape((len(delta[~delta.mask]),1)))
+      
+            nabla_b_backprop[- k][~nabla_b_backprop[-k].mask] = delta[~delta.mask]  
+    
             nabla_w = np.ma.dot(delta[~delta.mask].reshape((len(delta[~delta.mask]),1)), activations[-k-1].reshape((1,len(activations[-k-1]))),strict=True)
-            #print('nabla_w ', nabla_w.shape, nabla_w)
+            
             nabla_w_backprop[-k][~nabla_w_backprop[-k].mask] =nabla_w[~nabla_w.mask]  
-            #print('nabla_w_backprop[-k]: ',nabla_w_backprop[-k].shape,nabla_w_backprop[-k])
+        
     return nabla_b_backprop, nabla_w_backprop
 def feedforward(a, biases, weights):
     for b,w in zip(biases,weights):
-        a = sigmoid(np.ma.dot(w, a,strict=True) +b)    #sigmoid(np.dot(w, a) + b)
+        a = sigmoid(np.ma.dot(w, a,strict=True) +b)    
     return a
-#def get_predictions(test_Y, biases, weights):
-#    feedfor = [feedforward(testY, biases, weights) for testY in test_Y]   ### ???? O QUE ????
-#    return pandas.Series(feedfor).idxmax()
+
 def cost_delta(method, z, a , y):
     if(method=='ce'):      
-        #print('y.shape : ',y.shape, y)
-        #print('a: ', a.shape, a)
-        #print('sigmoid_prime(z): ', sigmoid_prime(z).shape, sigmoid_prime(z))
-        #print('(a-y) ',(a-y).shape, (a-y))
+
         return np.ma.dot((a - y), sigmoid_prime(z),strict=True) #'ce' for cross-entropy loss function
     if(method=='re'):
         return 0.5*(((a-y))**2).sum()
@@ -292,8 +247,7 @@ def cost_delta(method, z, a , y):
 def evaluater(X_test, Y_test, biases, weights):  
     """ for regression  """
     fitted_test = np.array([feedforward(x,biases,weights).compressed() for x in X_test]).flatten()
-    #print('fitted_test ' ,fitted_test.shape, fitted_test)
-    print('np.mean(fitted_test) ', np.mean(fitted_test))
+   
     R2_test = 1 - ( (fitted_test - Y_test)**2 ).sum()/(((Y_test - np.mean(Y_test)))**2).sum()
     MSE_test = np.sum((fitted_test - Y_test)**2)/len(Y_test)
     bias_test = np.sum((Y_test - np.mean(fitted_test))**2)/len(Y_test)
@@ -302,7 +256,7 @@ def evaluater(X_test, Y_test, biases, weights):
         
 def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
-    #print([feedforward(x,biases,weights).compressed() for x in X_test])
+   
     test_result = [(classifyf(feedforward(x,biases,weights).compressed()), y) for (x,y) in zip(X_test,Y_test)]#
     return (sum(int(x==y) for (x,y) in test_result))/len(test_result)
 def classifyf(prob):
@@ -333,15 +287,15 @@ def classifyVector(inX, weights):
 def in_random_order(data):
     """generator that returns the elements of data in random order"""
     indexes = [i for i, _ in enumerate(data)] # create a list of indexes
-    #print('indexes_antes',indexes)
+  
     random.shuffle(indexes)                   # shuffle them
     return indexes
 def gradDscent(dataMat, classLabels, alpha = 0.001):
 
-    labelMat = numpy.mat(classLabels).transpose()
-    dataMat = numpy.mat(dataMat)
-    m,n = numpy.shape(dataMat)
-    #alpha = 0.001
+    labelMat = np.mat(classLabels).transpose()
+    dataMat = np.mat(dataMat)
+    m,n = np.shape(dataMat)
+
     maxCycles = 500
     weights = numpy.ones((n,1))
     for k in range(maxCycles):
@@ -351,20 +305,18 @@ def gradDscent(dataMat, classLabels, alpha = 0.001):
     return weights
 def stocGradAscentA(dataMatrix, classLabels, numIter=300):     
     '''dataMatrix is x, classLabels is y (output)'''
-    m,n = numpy.shape(dataMatrix)
-    weights = numpy.ones(n)   #initialize to all ones
-    #weights = [random.gauss(0,1) for _ in range(n)]   #random number with 0 mean and 1 std
-    #print(weights)
+    m,n = np.shape(dataMatrix)
+    weights = np.ones(n)   #initialize to all ones
+
     for j in range(numIter):
         for i, index  in enumerate(in_random_order(zip(dataMatrix, classLabels))):
             dataMatrix_i, classLabels_i = dataMatrix[index], classLabels[index]
-            #alpha = 4/(1.0+j+i)+0.0001    #apha decreases with iteration, does not go to 0 because of the constant
+          
             alpha = 4/(1.0+j+i)+0.0001
-            #print(dataMatrix_i)
-            #print(sum(dataMatrix_i*weights))
+    
             h = sigmoid(sum(dataMatrix_i*weights))
             error = h - (classLabels_i)
-            #weights = weights + alpha * error * dataMatrix_i
+  
             weights = weights - alpha * error * dataMatrix_i
     return weights
 def simptest(weights, X_test, Y_test):
@@ -386,36 +338,15 @@ def classifyVector(inX, weights):
     if prob > 0.5: return 1.0
     else: return 0.0
 
-def plotBestFit(weights):
-    import matplotlib.pyplot as plt
-    dataMat,labelMat=loadDataSet()
-    dataArr = numpy.array(dataMat)
-    n = numpy.shape(dataArr)[0] 
-    xcord1 = []; ycord1 = []
-    xcord2 = []; ycord2 = []
-    for i in range(n):
-        if int(labelMat[i])== 1:
-            xcord1.append(dataArr[i,1]); ycord1.append(dataArr[i,2])
-        else:
-            xcord2.append(dataArr[i,1]); ycord2.append(dataArr[i,2])
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.scatter(xcord1, ycord1, s=30, c='red', marker='s')
-    ax.scatter(xcord2, ycord2, s=30, c='green')
-    x = numpy.arange(-3.0, 3.0, 0.1)
-    y = (-weights[0]-weights[1]*x)/weights[2]
-    ax.plot(x, y)
-    plt.xlabel('X1'); plt.ylabel('X2');
-    plt.show()
     
 
 
 def test(X_train, Y_train, X_test, Y_test):
-    #frTrain = open('horseColicTraining.txt'); frTest = open('horseColicTest.txt')
+
     trainingSet = X_train; trainingLabels = Y_train
     m, n = numpy.shape(trainingSet)
     trainWeights = sgd(numpy.array(trainingSet), trainingLabels)
-    #stocGradAscentA(numpy.array(trainingSet), trainingLabels, 500)
+  
     errorCount = 0; numTestVec = 0.0
     for lineX, lineY in zip(X_test, Y_test):
         numTestVec += 1.0
@@ -431,28 +362,20 @@ def multiTest():
         errorSum += Test(X_train, Y_train, X_test, Y_test)
     print("after %d iterations the average error rate is: %f" % (numTests, errorSum/float(numTests)))
         
-def loadDataSet():
-    dataMat = []; labelMat = []
-    fr = open('testSet.txt')
-    for line in fr.readlines():
-        lineArr = line.strip().split()
-        dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
-        labelMat.append(int(lineArr[2]))
-    return dataMat,labelMat
+
 def learning_schedule(t):
     t0, t1 = 5.0, 50.0
     return t0/(t + t1)
 def sgd(dataMatrix, classLabels):
     n_epochs = 200
-
     m,n = numpy.shape(dataMatrix)
     intercept = np.ones((dataMatrix.shape[0], 1))
     dataMatrix= np.concatenate((intercept, dataMatrix), axis=1) 
-    weights = numpy.ones(n+1)   #initialize to all ones
-    #weights = [random.gauss(0,1) for _ in range(n)]   #random number with 0 mean and 1 std
+    weights = np.ones(n+1)   #initialize to all ones
+ 
     for epoch in range(n_epochs):
         for i in range(m):
-            random_index = numpy.random.randint(m)
+            random_index = np.random.randint(m)
             xi = dataMatrix[random_index:random_index+1]
             yi = classLabels[random_index:random_index+1]
 
