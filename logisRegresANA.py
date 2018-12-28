@@ -19,7 +19,7 @@ def logistic_log_likelihoodi(xi, yi, weights):
     prediction = predict(weights, xi)
     if (prediction == 'nan'): print('predict(weights, xi) ', predict(weights, xi))
     if yi == 1:
-        #print('yi == 1', predict(weights, xi))
+       
         if (predict(weights, xi)==0):
             return 0.  
         else: return np.log(predict(weights, xi))
@@ -31,14 +31,7 @@ def logistic_log_likelihoodi(xi, yi, weights):
     else: 
         print("ALGO ESTRANHO!!")
         return 0
-#def logistic_log_likelihoodi(xi, yi, weights):
-#    print('xi ' , xi)
-#    print('yi ' , yi)
-#    print('predict(weights, xi) ', predict(weights, xi))
-#    if yi == 1:
-#        return math.log(predict(weights, xi))
-    #Yi == 0:
-#    else: return math.log((1 - predict(weights, xi)))
+
 def logistic_log_likelihood(weights, X_train, Y_train):
     label_probabilities=np.array([logistic_log_likelihoodi(xi, yi, weights) for (xi, yi) in zip(X_train,Y_train)])
     print('- sum', -np.sum(label_probabilities))
@@ -78,15 +71,7 @@ def steepest_descent_auto(X_train, Y_train, alpha =0.001):
 
         weights = nextweights      
     return weights#, loss_values[-1]
-    #for _ in range(100):
-    #        loss_values.append(loss(weights, X_train, Y_train))
-    #        step = gradientloss(weights, X_train, Y_train)
-    #        nextweights = weights - step * learning_rate
-    #        if abs(loss_values[-1]- loss(nextweights,X_train,Y_train))<tolerance:
-    #            return weights
-    #        else:
-    #            weights = nextweights
-    
+
 ################################
 def logistic_reg(X_train, y, epochs, lr):   #ruim...
     xb = np.c_[np.ones((X_train.shape[0],1)),X_train]
@@ -100,7 +85,7 @@ def logistic_reg(X_train, y, epochs, lr):   #ruim...
     return weights
 def log_likelihood(xb, y, weights):
     scores = xb @ weights
-    ll = (y * scores) - np.log(1+ numpy.exp(scores))
+    ll = (y * scores) - np.log(1+ np.exp(scores))
     return sum(ll)
 ##########################Neural network:
 def neuralnetwork(sizes,X_train,Y_train,validation_x,validation_y,verbose=False,
