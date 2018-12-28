@@ -287,9 +287,6 @@ def classifyVector(inX, weights):
     if prob > 0.5: return 1.0
     else: return 0.0
 
-    
-
-
 def test(X_train, Y_train, X_test, Y_test):
 
     trainingSet = X_train; trainingLabels = Y_train
