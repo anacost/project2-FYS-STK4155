@@ -58,7 +58,7 @@ def main():
                                                   Y_train,
                                                   validation_x=X_test, validation_y=Y_test,
                                                   verbose=True,
-                             epochs= 1, mini_batch_size = 10, lr= 0.5, C='re')
+                             epochs= 1, mini_batch_size = 10,  C='re')
   print('biasesnn ', biasesnn)
   print('weightsnn ', weightsnn)
   file = open("RstateNN", 'wb')

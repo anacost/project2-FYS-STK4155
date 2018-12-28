@@ -91,7 +91,7 @@ def main():
                                                   Y_train,
                                                   validation_x=X_test, validation_y=Y_test,
                                                   verbose=True,
-                             epochs= 1, mini_batch_size = 10, lr= 0.5, C='ce')
+                             epochs= 1, mini_batch_size = 10,  C='ce')
   print('biasesnn ', biasesnn)
   print('weightsnn ', weightsnn)
   file = open("stateNN", 'wb')
@@ -99,14 +99,7 @@ def main():
   pickle.dump(data, file)
   file.close()
 
-  file = open("stateNN1", 'wb')
-  data = {'biases': biasesnn, 'weights': weightsnn}
-  ma.dump(data, file)
-  file.close()
 
-  file.open("statebiasesNN")
-  ma.dump(biases, file)
-  file.close()
 
   file.open()
 
