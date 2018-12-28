@@ -353,7 +353,7 @@ def learning_schedule(t):
     return t0/(t + t1)
 def sgd(dataMatrix, classLabels):
     n_epochs = 200
-    m,n = numpy.shape(dataMatrix)
+    m,n = np.shape(dataMatrix)
     intercept = np.ones((dataMatrix.shape[0], 1))
     dataMatrix= np.concatenate((intercept, dataMatrix), axis=1) 
     weights = np.ones(n+1)   #initialize to all ones
