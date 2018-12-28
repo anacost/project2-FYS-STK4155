@@ -301,9 +301,8 @@ def evaluater(X_test, Y_test, biases, weights):
     
 def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
-    print([feedforward(x,biases,weights) for x in X_test])
-    test_result = [(feedforward(x,biases,weights),y) for (x,y) in zip(X_test,Y_test)]#[(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
-    
+    #print([feedforward(x,biases,weights).compressed() for x in X_test])
+    test_result = [(feedforward(x,biases,weights).compressed().flatten(),y) for (x,y) in zip(X_test,Y_test)]#[(np.argmax(feedforward(x,biases,weights)),y) for (x,y) in zip(X_test,Y_test)]
     return sum(int(x==y) for (x,y) in test_result)
     #pred = get_predictions(X_test, biases, weights)
     #truths = pandas.Series(Y_test).idxmax()
