@@ -303,7 +303,7 @@ def evaluate(X_test, Y_test, biases, weights):
     """ for classification"""
     #print([feedforward(x,biases,weights).compressed() for x in X_test])
     test_result = [(classifyf(feedforward(x,biases,weights).compressed()), y) for (x,y) in zip(X_test,Y_test)]#
-    return sum(int(x==y) for (x,y) in test_result)
+    return (sum(int(x==y) for (x,y) in test_result))/len(test_result)
 def classifyf(prob):
     if prob > 0.5: return 1
     else: return 0
