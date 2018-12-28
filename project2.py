@@ -80,6 +80,7 @@ def main():
   Y_train = data['Y_train']
   X_test = data['X_test']
   Y_test = data['Y_test']
+
   importlib.reload(logisRegresANA)
   in_layer = X_train.shape[1] #number of neurons in the input layer
 
@@ -97,6 +98,17 @@ def main():
   data = {'biases': biasesnn, 'weights': weightsnn}
   pickle.dump(data, file)
   file.close()
+
+  file = open("stateNN1", 'wb')
+  data = {'biases': biasesnn, 'weights': weightsnn}
+  ma.dump(data, file)
+  file.close()
+
+  file.open("statebiasesNN")
+  ma.dump(biases, file)
+  file.close()
+
+  file.open()
 
 if __name__ == '__main__':
     main()
